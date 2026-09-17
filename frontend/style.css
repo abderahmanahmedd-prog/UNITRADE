@@ -1092,6 +1092,88 @@ h1, h2, h3, h4, .brand-name, .hero-title, .stat-value, .pill, .btn {
   to { opacity: 1; transform: translateX(0); }
 }
 
+.account-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-balance {
+  border: 1px solid #a7f3d0;
+  background: var(--emerald-light);
+  color: #065f46;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.8rem;
+  font: 700 0.85rem 'Outfit', sans-serif;
+  cursor: pointer;
+}
+
+.btn-small {
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.detail-buy-btn {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.account-form-footer {
+  justify-content: space-between;
+}
+
+.dashboard-balance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--emerald-light);
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  color: #065f46;
+}
+
+.dashboard-balance strong {
+  font: 800 1.5rem 'Outfit', sans-serif;
+}
+
+.dashboard-listings {
+  margin-top: 1.5rem;
+}
+
+.dashboard-listings h3 {
+  margin-bottom: 0.75rem;
+}
+
+.my-listings-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.my-listing-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.7rem 0;
+  font-size: 0.9rem;
+}
+
+.my-listing-row em {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+.my-listing-row small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .hero-container {

@@ -1,3 +1,13 @@
 node_modules/
 .env
 package-lock.json
+
+# Runtime data created by the local fallback and uploads
+data/mongodb/
+data/users.json
+uploads/listings/*
+
+# Angular generated files and dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/

@@ -12,7 +12,7 @@ function deleteUploadedFile(foldername, filename) {
   const filePath = path.join(__dirname, "..", "uploads", foldername, filename);
 
   fs.unlink(filePath, (err) => {
-    if (err) {
+    if (err && err.code !== "ENOENT") {
       console.log("Error deleting file:", err.message);
     }
   });

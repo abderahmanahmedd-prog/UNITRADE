@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Navigation Header -->
@@ -32,6 +32,11 @@
       </div>
 
       <div class="nav-actions">
+        <div id="accountSummary" class="account-summary" style="display: none;">
+          <button class="account-balance" id="openDashboardBtn" title="Open dashboard">0 EGP</button>
+          <button class="btn btn-secondary btn-small" id="logoutBtn">Log out</button>
+        </div>
+        <button class="btn btn-secondary" id="openAuthModalBtn">Student Login / Sign Up</button>
         <button class="btn btn-primary" id="openCreateModalBtn">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -142,7 +147,7 @@
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title-group">
-          <h2 class="modal-title">Post a New Campus Listing</h2>
+          <h2 class="modal-title" id="createModalTitle">Post a New Campus Listing</h2>
           <p class="modal-subtitle">Items will be visible immediately to fellow university students.</p>
         </div>
         <button class="modal-close" id="closeCreateModalBtn">&times;</button>
@@ -261,6 +266,7 @@
 
           <!-- Owner / Status Management -->
           <div class="detail-actions-panel">
+            <button class="btn btn-primary detail-buy-btn" id="buyListingBtn">Buy this item</button>
             <h4>Item Status Control</h4>
             <div class="status-action-buttons">
               <button class="btn btn-status-available" id="setAvailableBtn">Mark Available</button>
@@ -269,6 +275,7 @@
             </div>
 
             <div class="danger-zone">
+              <button class="btn btn-outline" id="editListingBtn">Edit Listing</button>
               <button class="btn btn-danger-outline" id="deleteListingBtn">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
@@ -283,21 +290,50 @@
     </div>
   </div>
 
+  <!-- Student Account Modal -->
+  <div class="modal-backdrop" id="authModal" style="display: none;">
+    <div class="modal-card account-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 class="modal-title" id="authModalTitle">Student Login</h2>
+          <p class="modal-subtitle">Use one student account to buy and sell on campus.</p>
+        </div>
+        <button class="modal-close" id="closeAuthModalBtn">&times;</button>
+      </div>
+      <form id="authForm" class="modal-form">
+        <div id="registerFields" style="display: none;">
+          <div class="form-group"><label for="authName">Full name</label><input id="authName" name="name" placeholder="Your full name" /></div>
+          <div class="form-row">
+            <div class="form-group col-half"><label for="authStudentId">Student ID</label><input id="authStudentId" name="studentId" placeholder="e.g. 20240123" /></div>
+            <div class="form-group col-half"><label for="authFaculty">Faculty</label><input id="authFaculty" name="faculty" placeholder="e.g. Engineering" /></div>
+          </div>
+        </div>
+        <div class="form-group"><label for="authEmail">University email</label><input type="email" id="authEmail" name="email" required placeholder="student@university.edu" /></div>
+        <div class="form-group"><label for="authPassword">Password</label><input type="password" id="authPassword" name="password" required minlength="6" placeholder="At least 6 characters" /></div>
+        <div class="modal-footer account-form-footer">
+          <button type="button" class="btn btn-outline" id="toggleAuthModeBtn">Create account</button>
+          <button type="submit" class="btn btn-primary" id="submitAuthBtn">Log in</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Student Dashboard Modal -->
+  <div class="modal-backdrop" id="dashboardModal" style="display: none;">
+    <div class="modal-card dashboard-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group"><h2 class="modal-title">Student Dashboard</h2><p class="modal-subtitle" id="dashboardWelcome">Your UniTrade account</p></div>
+        <button class="modal-close" id="closeDashboardModalBtn">&times;</button>
+      </div>
+      <div class="dashboard-balance"><span>Available earnings</span><strong id="dashboardBalance">0 EGP</strong></div>
+      <div class="dashboard-listings"><h3>My listings</h3><div id="myListingsList" class="my-listings-list"></div></div>
+      <div class="dashboard-listings"><h3>Purchase history</h3><div id="purchaseHistoryList" class="my-listings-list"></div></div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-brand">
-        <strong>UniTrade</strong> — University Exclusive Student Marketplace
-      </div>
-      <div class="footer-note">
-        Built with Express, Mongoose & Multer &middot; Web Development Course Project
-      </div>
-    </div>
-  </footer>
-
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

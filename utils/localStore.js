@@ -10,74 +10,8 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Initial seed listings if file does not exist
-const initialSeed = [
-  {
-    _id: "66e85a001111222233334441",
-    title: "Calculus: Early Transcendentals (8th Edition)",
-    description: "Required textbook for MATH 101/102. Good condition, no missing pages, minimal pencil annotations on chapters 2 and 4.",
-    price: 350,
-    category: "books",
-    condition: "like-new",
-    sellerName: "Sarah Jenkins (Senior, Engineering)",
-    imageUrl: "seed-calculus.jpg",
-    status: "available",
-    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-  },
-  {
-    _id: "66e85a001111222233334442",
-    title: "Sony WH-1000XM4 Wireless Noise-Cancelling Headphones",
-    description: "Black colour. Perfect for quiet study sessions in the campus library. Comes with original case, 3.5mm cable, and USB-C charger.",
-    price: 2800,
-    category: "electronics",
-    condition: "used",
-    sellerName: "Omar Tarek (Junior, Computer Science)",
-    imageUrl: "seed-headphones.jpg",
-    status: "available",
-    createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-  },
-  {
-    _id: "66e85a001111222233334443",
-    title: "Compact Wooden Dorm Study Desk",
-    description: "Light oak finish, sturdy metal legs. Dimensions 100x50cm. Easy to assemble and fits nicely in any campus residence hall.",
-    price: 850,
-    category: "furniture",
-    condition: "like-new",
-    sellerName: "Maya Lin (Sophomore, Architecture)",
-    imageUrl: "seed-desk.jpg",
-    status: "available",
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-  },
-  {
-    _id: "66e85a001111222233334444",
-    title: "University Official Varsity Fleece Hoodie (Size M)",
-    description: "Deep navy hoodie with embroidered university crest. Very warm and comfortable, worn only twice.",
-    price: 450,
-    category: "clothing",
-    condition: "like-new",
-    sellerName: "Alex Rivera (Freshman, Business)",
-    imageUrl: "seed-hoodie.jpg",
-    status: "available",
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-  {
-    _id: "66e85a001111222233334445",
-    title: "Chemistry Lab Coat & Safety Goggles Set",
-    description: "Unisex size Medium 100% cotton lab coat + anti-fog splash goggles. Complies with university lab safety rules.",
-    price: 250,
-    category: "other",
-    condition: "used",
-    sellerName: "Hassan Aly (Pre-Med Student)",
-    imageUrl: "seed-labcoat.jpg",
-    status: "available",
-    createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 1).toISOString(),
-  },
-];
+// The catalog starts empty; students add their own listings.
+const initialSeed = [];
 
 function readData() {
   if (!fs.existsSync(dataFile)) {
@@ -121,6 +55,7 @@ class LocalListingStore {
     let results = all.filter((item) => {
       if (filter.category && item.category !== filter.category) return false;
       if (filter.status && item.status !== filter.status) return false;
+      if (filter.user && String(item.user) !== String(filter.user)) return false;
       return true;
     });
 
@@ -158,6 +93,7 @@ class LocalListingStore {
       condition: data.condition || "used",
       sellerName: data.sellerName,
       imageUrl: data.imageUrl || null,
+      user: data.user || null,
       status: data.status || "available",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -178,8 +114,124 @@ class LocalListingStore {
   }
 }
 
+class LocalUserStore {
+  static getUsersFile() {
+    return path.join(dataDir, "users.json");
+  }
+
+  static readUsers() {
+    const uFile = this.getUsersFile();
+    if (!fs.existsSync(uFile)) {
+      return [];
+    }
+    try {
+      return JSON.parse(fs.readFileSync(uFile, "utf8"));
+    } catch {
+      return [];
+    }
+  }
+
+  static writeUsers(users) {
+    fs.writeFileSync(this.getUsersFile(), JSON.stringify(users, null, 2), "utf8");
+  }
+
+  static findOne(query = {}) {
+    const users = this.readUsers();
+    let found = users.find((u) => {
+      for (const [k, v] of Object.entries(query)) {
+        if (u[k] !== v) return false;
+      }
+      return true;
+    });
+
+    const chain = {
+      select() {
+        return chain;
+      },
+      then(resolve, reject) {
+        if (!found) return Promise.resolve(null).then(resolve, reject);
+        const doc = new LocalDocument(found);
+        doc.comparePassword = async function (cand) {
+          const bcrypt = require("bcryptjs");
+          return await bcrypt.compare(cand, doc.password);
+        };
+        return Promise.resolve(doc).then(resolve, reject);
+      },
+    };
+    return chain;
+  }
+
+  static async findById(id) {
+    const users = this.readUsers();
+    const found = users.find((u) => String(u._id) === String(id));
+    if (!found) return null;
+    const doc = new LocalDocument(found);
+    doc.comparePassword = async function (cand) {
+      const bcrypt = require("bcryptjs");
+      return await bcrypt.compare(cand, doc.password);
+    };
+    return doc;
+  }
+
+  static async create(data) {
+    const users = this.readUsers();
+    const bcrypt = require("bcryptjs");
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const newUser = {
+      _id: crypto.randomBytes(12).toString("hex"),
+      name: data.name,
+      email: data.email.toLowerCase(),
+      studentId: data.studentId,
+      faculty: data.faculty || "General Studies",
+      password: hashedPassword,
+      role: data.role || "student",
+      balance: Number(data.balance) || 0,
+      purchaseHistory: data.purchaseHistory || [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    users.push(newUser);
+    this.writeUsers(users);
+    const doc = new LocalDocument(newUser);
+    doc.comparePassword = async function (cand) {
+      return await bcrypt.compare(cand, doc.password);
+    };
+    return doc;
+  }
+
+  static async updateBalance(id, amount) {
+    const users = this.readUsers();
+    const index = users.findIndex((user) => String(user._id) === String(id));
+    if (index === -1) return null;
+
+    users[index].balance = Math.max(0, Number(users[index].balance || 0) + Number(amount));
+    users[index].updatedAt = new Date().toISOString();
+    this.writeUsers(users);
+
+    const doc = new LocalDocument(users[index]);
+    doc.comparePassword = async function (cand) {
+      return await bcrypt.compare(cand, doc.password);
+    };
+    return doc;
+  }
+
+  static async addPurchase(id, purchase) {
+    const users = this.readUsers();
+    const index = users.findIndex((user) => String(user._id) === String(id));
+    if (index === -1) return null;
+
+    users[index].purchaseHistory = users[index].purchaseHistory || [];
+    users[index].purchaseHistory.unshift(purchase);
+    users[index].updatedAt = new Date().toISOString();
+    this.writeUsers(users);
+    return new LocalDocument(users[index]);
+  }
+}
+
 module.exports = {
   LocalListingStore,
+  LocalUserStore,
   LocalDocument,
   initialSeed,
 };
+

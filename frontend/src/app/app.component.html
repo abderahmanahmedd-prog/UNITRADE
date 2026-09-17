@@ -1,0 +1,29 @@
+<header class="topbar">
+  <div><strong>UniTrade</strong><span>Campus marketplace</span></div>
+  <div class="account" *ngIf="auth.user() as user; else signedOut">
+    <button (click)="dashboardOpen.set(!dashboardOpen())">{{ user.balance | number }} EGP</button>
+    <button class="quiet" (click)="auth.logout()">Log out</button>
+  </div>
+  <ng-template #signedOut><button class="primary" (click)="loginMode.set(!loginMode())">{{ loginMode() ? 'Student login' : 'Student sign up' }}</button></ng-template>
+</header>
+
+<main>
+  <section class="intro"><p class="eyebrow">Student marketplace</p><h1>Buy and sell with your campus community.</h1><p>Every account can publish listings, purchase items, and track earnings in EGP.</p></section>
+
+  <section class="auth-panel" *ngIf="!auth.user()">
+    <h2>{{ loginMode() ? 'Student login' : 'Create student account' }}</h2>
+    <div class="form-grid" *ngIf="!loginMode()"><input [(ngModel)]="name" placeholder="Full name"><input [(ngModel)]="studentId" placeholder="Student ID"><input [(ngModel)]="faculty" placeholder="Faculty"></div>
+    <div class="form-grid"><input [(ngModel)]="email" type="email" placeholder="University email"><input [(ngModel)]="password" type="password" placeholder="Password"></div>
+    <button class="primary" (click)="submitAuth()">{{ loginMode() ? 'Log in' : 'Create account' }}</button>
+    <button class="link" (click)="loginMode.set(!loginMode())">{{ loginMode() ? 'Need an account?' : 'Already registered?' }}</button>
+    <p class="message" *ngIf="message()">{{ message() }}</p>
+  </section>
+
+  <section class="dashboard" *ngIf="dashboardOpen() && auth.user() as user">
+    <h2>{{ user.name }}'s dashboard</h2><p class="balance">{{ user.balance | number }} EGP earned</p>
+    <h3>Purchase history</h3><p *ngIf="!user.purchaseHistory?.length">No purchases yet.</p>
+    <div class="history" *ngFor="let purchase of user.purchaseHistory"><span>{{ purchase.title }}</span><strong>{{ purchase.price | number }} EGP</strong></div>
+  </section>
+
+  <section class="listing-section"><div class="section-heading"><h2>Explore listings</h2><span>{{ listings().length }} items</span></div><div class="grid"><article class="listing" *ngFor="let listing of listings()"><div class="listing-top"><span>{{ listing.category }}</span><strong>{{ listing.price | number }} EGP</strong></div><h3>{{ listing.title }}</h3><p>{{ listing.description }}</p><footer><span>{{ listing.sellerName }}</span><button class="primary" *ngIf="listing.status === 'available'" (click)="buy(listing)">Buy</button><span *ngIf="listing.status !== 'available'">{{ listing.status }}</span></footer></article></div></section>
+</main>

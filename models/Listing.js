@@ -39,6 +39,11 @@ const listingSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
     status: {
       type: String,
       enum: ["available", "reserved", "sold"],
