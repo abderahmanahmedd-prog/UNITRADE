@@ -1,0 +1,54 @@
+[
+  {
+    "_id": "66e85a001111222233334441",
+    "title": "Calculus: Early Transcendentals (8th Edition)",
+    "description": "Required textbook for MATH 101/102. Good condition, no missing pages, minimal pencil annotations on chapters 2 and 4.",
+    "price": 350,
+    "category": "books",
+    "condition": "like-new",
+    "sellerName": "Sarah Jenkins (Senior, Engineering)",
+    "imageUrl": "seed-calculus.jpg",
+    "status": "available",
+    "createdAt": "2026-09-15T11:34:13.994Z",
+    "updatedAt": "2026-09-15T11:34:13.996Z"
+  },
+  {
+    "_id": "66e85a001111222233334442",
+    "title": "Sony WH-1000XM4 Wireless Noise-Cancelling Headphones",
+    "description": "Black colour. Perfect for quiet study sessions in the campus library. Comes with original case, 3.5mm cable, and USB-C charger.",
+    "price": 2800,
+    "category": "electronics",
+    "condition": "used",
+    "sellerName": "Omar Tarek (Junior, Computer Science)",
+    "imageUrl": "seed-headphones.jpg",
+    "status": "available",
+    "createdAt": "2026-09-15T23:34:13.996Z",
+    "updatedAt": "2026-09-15T23:34:13.996Z"
+  },
+  {
+    "_id": "66e85a001111222233334443",
+    "title": "Compact Wooden Dorm Study Desk",
+    "description": "Light oak finish, sturdy metal legs. Dimensions 100x50cm. Easy to assemble and fits nicely in any campus residence hall.",
+    "price": 850,
+    "category": "furniture",
+    "condition": "like-new",
+    "sellerName": "Maya Lin (Sophomore, Architecture)",
+    "imageUrl": "seed-desk.jpg",
+    "status": "sold",
+    "createdAt": "2026-09-16T06:34:13.996Z",
+    "updatedAt": "2026-09-16T11:42:32.073Z"
+  },
+  {
+    "_id": "66e85a001111222233334444",
+    "title": "University Official Varsity Fleece Hoodie (Size M)",
+    "description": "Deep navy hoodie with embroidered university crest. Very warm and comfortable, worn only twice.",
+    "price": 450,
+    "category": "clothing",
+    "condition": "like-new",
+    "sellerName": "Alex Rivera (Freshman, Business)",
+    "imageUrl": "seed-hoodie.jpg",
+    "status": "available",
+    "createdAt": "2026-09-16T09:34:13.996Z",
+    "updatedAt": "2026-09-16T09:34:13.996Z"
+  }
+]
